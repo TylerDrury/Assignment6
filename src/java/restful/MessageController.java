@@ -47,7 +47,7 @@ public class MessageController {
     }
 
     public Message getById(int id) {
-       String r = "";
+       
         try{
             Connection conn = DBUtils.getConnection();
           //  Statement stmt = conn.createStatement();
@@ -57,22 +57,20 @@ public class MessageController {
               ResultSet rs = prst.executeQuery();
               rs.next();
             while (rs.next()) {
-                Message m = new Message();
-                m.setAuthor(rs.getString("author"));
-                m.setMessageId(rs.getInt("messageId"));
-                m.setContents(rs.getString("content"));
-                m.setTitle(rs.getString("title"));
-                m.setSentTime(rs.getDate("sentTime"));
-                //return m;
+                Message mes = new Message();
+                mes.setAuthor(rs.getString("author"));
+                mes.setMessageId(rs.getInt("messageId"));
+                mes.setContents(rs.getString("content"));
+                mes.setTitle(rs.getString("title"));
+                String sentTime = rs.getString("sentTime");
                 try{
-                    m.setSentTime(sd.parse(sentTime));
+                    mes.setSentTime(sd.parse(sentTime));
                 }
                 catch(ParseException ex){
-                    m.setSentTime(newDate());
+                    mes.setSentTime(new Date());
                 }
-                return m;
+                return mes;
             }
-
         } 
         }
         catch (SQLException ex) {
