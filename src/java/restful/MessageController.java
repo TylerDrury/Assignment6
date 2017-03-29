@@ -6,6 +6,7 @@
 package restful;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,10 +47,15 @@ public class MessageController {
     }
 
     public Message getById(int id) {
-        try {
+       String r = "";
+        try{
             Connection conn = DBUtils.getConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Message");
+          //  Statement stmt = conn.createStatement();
+            PreparedStatement prst =  conn.prepareStatement("SELECT * FROM Message WHERE messageId= ?");
+            for(Message m : message){
+              prst.setInt(1, id);
+              ResultSet rs = prst.executeQuery();
+              rs.next();
             while (rs.next()) {
                 Message m = new Message();
                 m.setAuthor(rs.getString("author"));
@@ -57,13 +63,21 @@ public class MessageController {
                 m.setContents(rs.getString("content"));
                 m.setTitle(rs.getString("title"));
                 m.setSentTime(rs.getDate("sentTime"));
+                //return m;
+                try{
+                    m.setSentTime(sd.parse(sentTime));
+                }
+                catch(ParseException ex){
+                    m.setSentTime(newDate());
+                }
                 return m;
             }
 
-        } catch (SQLException ex) {
+        } 
+        }
+        catch (SQLException ex) {
             Logger.getLogger(MessageController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         /*for (Message m : message) {
             if (m.getMessageId() == id) {
                 return m;
