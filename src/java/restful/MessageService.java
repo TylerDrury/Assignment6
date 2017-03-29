@@ -69,8 +69,8 @@ public class MessageService {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response add(JsonObject json) {
-        return Response.ok(messageController.add(json)).build();
+    public Response add() {
+        return Response.ok(messageController.add()).build();
     }
 
     @PUT

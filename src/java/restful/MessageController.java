@@ -47,40 +47,34 @@ public class MessageController {
     }
 
     public Message getById(int id) {
-       
-        try{
+
+        try {
             Connection conn = DBUtils.getConnection();
-          //  Statement stmt = conn.createStatement();
-            PreparedStatement prst =  conn.prepareStatement("SELECT * FROM Message WHERE messageId= ?");
-            for(Message m : message){
-              prst.setInt(1, id);
-              ResultSet rs = prst.executeQuery();
-              rs.next();
-            while (rs.next()) {
-                Message mes = new Message();
-                mes.setAuthor(rs.getString("author"));
-                mes.setMessageId(rs.getInt("messageId"));
-                mes.setContents(rs.getString("content"));
-                mes.setTitle(rs.getString("title"));
-                String sentTime = rs.getString("sentTime");
-                try{
-                    mes.setSentTime(sd.parse(sentTime));
+            //  Statement stmt = conn.createStatement();
+            PreparedStatement prst = conn.prepareStatement("SELECT * FROM Message WHERE messageId= ?");
+            for (Message m : message) {
+                prst.setInt(1, id);
+                ResultSet rs = prst.executeQuery();
+                rs.next();
+                while (rs.next()) {
+                    Message mes = new Message();
+                    mes.setAuthor(rs.getString("author"));
+                    mes.setMessageId(rs.getInt("messageId"));
+                    mes.setContents(rs.getString("content"));
+                    mes.setTitle(rs.getString("title"));
+                    String sentTime = rs.getString("sentTime");
+                    try {
+                        mes.setSentTime(sd.parse(sentTime));
+                    } catch (ParseException ex) {
+                        mes.setSentTime(new Date());
+                    }
+                    return mes;
                 }
-                catch(ParseException ex){
-                    mes.setSentTime(new Date());
-                }
-                return mes;
             }
-        } 
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(MessageController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        /*for (Message m : message) {
-            if (m.getMessageId() == id) {
-                return m;
-            }
-        }*/
+
         return null;
     }
 
@@ -94,6 +88,7 @@ public class MessageController {
     }
 
     public JsonArray getByDateJson(Date from, Date to) {
+
         JsonArrayBuilder json = Json.createArrayBuilder();
         for (Message m : message) {
             if ((m.getSentTime().after(from) && m.getSentTime().before(to))
@@ -104,8 +99,8 @@ public class MessageController {
         return json.build();
     }
 
-        private void getDBUtils() {
-       
+    private void getDBUtils() {
+
         try {
             Connection conn = DBUtils.getConnection();
             Statement stmt = conn.createStatement();
@@ -117,20 +112,20 @@ public class MessageController {
                 m.setContents(rs.getString("content"));
                 m.setTitle(rs.getString("title"));
                 m.setSentTime(rs.getDate("sentTime"));
-            
+
             }
 
         } catch (SQLException ex) {
             Logger.getLogger(MessageController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public String add() {
         Message m = new Message();
         try {
             Connection conn = DBUtils.getConnection();
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate("INSERT INTO products VALUES (" + m.getMessageId() + ",'"  + m.getTitle() + ",'" + m.getContents() + "','" + m.getAuthor() +  "','" + m.getSentTime() +"')");
+            stmt.executeUpdate("INSERT INTO products VALUES (" + m.getMessageId() + ",'" + m.getTitle() + ",'" + m.getContents() + "','" + m.getAuthor() + "','" + m.getSentTime() + "')");
             getDBUtils();
             return "index";
         } catch (SQLException ex) {
@@ -138,6 +133,7 @@ public class MessageController {
         }
         return "index";
     }
+
     public boolean deleteById(int id) {
         Message m = getById(id);
         if (m != null) {

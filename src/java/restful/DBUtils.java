@@ -16,7 +16,8 @@ import java.util.logging.Logger;
  * @author c0660455
  */
 public class DBUtils {
-      private final static String studentNumber = "c0660455";
+
+    private final static String studentNumber = "c0660455";
 
     /**
      * Utility method used to create a Database Connection
@@ -28,7 +29,7 @@ public class DBUtils {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
-            
+
         }
         String server = "ipro.lambton.on.ca";
         String username = studentNumber + "-java";
