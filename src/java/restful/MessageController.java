@@ -92,12 +92,40 @@ public class MessageController {
         return json.build();
     }
 
-    public JsonObject add(JsonObject json) {
-        Message m = new Message(json);
-        message.add(m);
-        return m.toJSON();
-    }
+        private void getDBUtils() {
+       
+        try {
+            Connection conn = DBUtils.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Message");
+            while (rs.next()) {
+                Message m = new Message();
+                m.setAuthor(rs.getString("author"));
+                m.setMessageId(rs.getInt("messageId"));
+                m.setContents(rs.getString("content"));
+                m.setTitle(rs.getString("title"));
+                m.setSentTime(rs.getDate("sentTime"));
+            
+            }
 
+        } catch (SQLException ex) {
+            Logger.getLogger(MessageController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public String add() {
+        Message m = new Message();
+        try {
+            Connection conn = DBUtils.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate("INSERT INTO products VALUES (" + m.getMessageId() + ",'"  + m.getTitle() + ",'" + m.getContents() + "','" + m.getAuthor() +  "','" + m.getSentTime() +"')");
+            getDBUtils();
+            return "index";
+        } catch (SQLException ex) {
+            Logger.getLogger(MessageController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "index";
+    }
     public boolean deleteById(int id) {
         Message m = getById(id);
         if (m != null) {
