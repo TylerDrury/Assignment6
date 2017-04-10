@@ -12,7 +12,7 @@ package restful;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
-@javax.ws.rs.ApplicationPath("m")
+@javax.ws.rs.ApplicationPath("r")
 public class ApplicationConfig extends Application {
 
     @Override
